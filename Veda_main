@@ -1,0 +1,400 @@
+import subprocess
+import time
+import sched, time
+import glob, os
+import hashlib
+import difflib
+import filecmp
+import os.path, time
+import hashlib
+import os
+import psutil
+from tkinter import *
+from tkinter.ttk import *
+from tkinter.filedialog import askopenfile
+
+# Код  сыроват, но простите автора, не успел... Могут мобилизовать
+# Идея проекта состоит в том, что переодически сканируются все dll  на ПК
+# Сравниваются с эталоном, полученным наголой ОС и все отличные dll от эталона выводятся в текст бокс
+# Первый раз запустив у себя сканер нашел много интересного
+# В дальнейшем хотел доделать сканер до того, что
+# С переодичностью 5-10 мин сканировать компьютер и выводить в виде уведомления появление установленных или изменных dll
+# На текущую дату
+
+# Отрисовываем окно в текинтер
+ws = Tk()
+ws.title('Veda')
+ws.geometry('800x600')
+ws.config(bg='#E6E6FA')
+text_box = Text(
+    ws,
+    height=12,
+    width=40
+)
+#Функция - по нажатию button  Сканирует C:\Program Files и создает файл  TestFile41.txt
+#Потом сравнивает этот файл с эталоном
+def click_button():
+    #global clicks
+    #if clicks:
+        text_box = Text(
+        ws,
+        height=12,
+        width=40
+    )
+        i = 0
+        your_list = list(range(1, 10001))
+        my_file1 = open("C:\python_dll\TestFile41.txt", "+w")
+        path = 'C:\Program Files' # Присваем path путь C:\Program Files
+        #Цикл сканирования директории C:\Program Files
+        for rootdir, dirs, files in os.walk(path):
+            for file in files:
+                if ((file.split('.')[-1]) == 'dll'):
+                # print(os.path.join(rootdir, file))
+                    my_file1.write(file + "\n") 
+        my_file1.close()
+        # Получаем и записываем в файл хэш сумму и дату создания\изминения
+        my_file3 = open("C:\python_dll\TestFile41.txt", "r")
+        my_file7 = open("C:\python_dll\Reresult101.txt", "w+")
+        for line3 in my_file3:
+            for file5 in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+            # your_list[i] = file5
+                your_list.append(file5)
+                i += 1
+                if file5 + '\n' == line3:
+                 t2 = os.path.getctime(file5)  # дата создания файла
+            # print(file5) #Вывод на консоль то что записали
+            # print(time.ctime(t2))
+                 my_file7.write(line3 + time.ctime(t2) + '__')
+                 my_file7.write(hashlib.md5(open(file5, 'rb').read()).hexdigest() + '\n' + '\n')  # берем хэш файла
+        # print(hashlib.md5(open(file5, 'rb').read()).hexdigest())
+        my_file3.close()
+        my_file7.close()
+        # Сравниваем полученные значения с эталоном
+        file41 = open("C:\python_dll\TestFile41.txt", 'r')  # Открываем для работы файл с текущими ДЛЛ компьютера
+        file42 = open("C:\python_dll\Etalon_PF.txt", 'r')  # Эталонный файл загружается заранее в эту папку
+        NewFile41 = open("C:\python_dll\R2result41.txt","+w")  # Открытие файла для записи совподающих ДЛЛ компьютера с Эталоном
+        NewFile42 = open("C:\python_dll\R2result41_1.txt","+w")  # Открытие файла для записи НЕ совподающих ДЛЛ компьютера с Эталоном
+        for line41 in file41:
+          for line42 in file42:
+              if line42 == line41:  # Сравниваем значения строк Эталона и Компьютера - если совопдают - запись произойдет в файл совопадающих значений
+                NewFile41.write(line41)
+                break;
+              if line42 != line41 and line42 == 'Microsoft.PowerShell.PSReadline.Resources.dll\n':  # Сравниваем значения строк Эталона и Компьютера
+                # - если условие не равенства и ДЛЛ последней строки эталона выполнится
+                # - запись произойдет в файл совопадающих НЕ значений
+                NewFile42.write(line41)
+                text_box.insert('end', line41)
+                text_box.insert('end', "Библиотеки не совпавшие с эталоном\n")
+                # print(line1)  # Печатаем значений не совпадающих значений
+                file42.close()  # Открыть и закрыть файл нужно, чтобы перебор в списке for начался с начала
+                file42 = open("C:\python_dll\Etalon_PF.txt", 'r')
+                break;
+        file41.close()
+        file42.close()
+        NewFile41.close()
+        NewFile42.close()
+# Отрисовка результатов в текст боксе
+        #ws.title("Clicks {}".format(clicks))
+        text_box.pack(expand=True)
+        text_box.config(state='disabled')
+        scroll = Scrollbar(command=text_box.yview)
+        scroll.pack(side=LEFT, fill=Y)
+        text_box.config(yscrollcommand=scroll.set)
+
+
+def click_button2():
+    #global clicks
+    #if clicks:
+    text_box = Text(
+        ws,
+        height=12,
+        width=40
+    )
+    i = 0
+    your_list = list(range(1, 10001))
+    my_file2 = open("C:\python_dll\TestFile42.txt", "+w")
+    path1 = 'C:\Program Files (x86)'
+
+    for rootdir, dirs, files in os.walk(path1):
+        for file in files:
+            if ((file.split('.')[-1]) == 'dll'):
+            # print(os.path.join(rootdir, file))
+                my_file2.write(file + "\n")
+    my_file2.close()
+    my_file3 = open("C:\python_dll\TestFile42.txt", "r")
+    my_file7 = open("C:\python_dll\Reresult102.txt", "w+")
+    for line3 in my_file3:
+        for file5 in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+            # your_list[i] = file5
+            your_list.append(file5)
+            i += 1
+            if file5 + '\n' == line3:
+                t2 = os.path.getctime(file5)  # дата создания файла
+            # print(file5) #Вывод на консоль то что записали
+            # print(time.ctime(t2))
+            my_file7.write(line3 + time.ctime(t2) + '__')
+            my_file7.write(hashlib.md5(open(file5, 'rb').read()).hexdigest() + '\n' + '\n')  # берем хэш файла
+        # print(hashlib.md5(open(file5, 'rb').read()).hexdigest())
+    my_file3.close()
+    my_file7.close()
+    file43 = open("C:\python_dll\TestFile42.txt", 'r')  # Открываем для работы файл с текущими ДЛЛ компьютера
+    file44 = open("C:\python_dll\Etalon_PF86.txt", 'r')  # Эталонный файл загружается заранее в эту папку
+    NewFile43 = open("C:\python_dll\R2result42.txt","+w")  # Открытие файла для записи совподающих ДЛЛ компьютера с Эталоном
+    NewFile44 = open("C:\python_dll\R2result42_1.txt","+w")  # Открытие файла для записи НЕ совподающих ДЛЛ компьютера с Эталоном
+
+    for line43 in file43:
+        for line44 in file44:
+            if line44 == line43:  # Сравниваем значения строк Эталона и Компьютера - если совопдают - запись произойдет в файл совопадающих значений
+                NewFile43.write(line44)
+                break;
+            if line44 != line43 and line44 == 'Microsoft.PowerShell.PackageManagement.resources.dll\n':  # Сравниваем значения строк Эталона и Компьютера
+                # - если условие не равенства и ДЛЛ последней строки эталона выполнится
+                # - запись произойдет в файл совопадающих НЕ значений
+                NewFile44.write(line43)
+                text_box.insert('end', line43)
+                text_box.insert('end', "Библиотеки не совпавшие с эталоном\n")
+                # print(line1)  # Печатаем значений не совпадающих значений
+                file44.close()  # Открыть и закрыть файл нужно, чтобы перебор в списке for начался с начала
+                file44 = open("C:\python_dll\Etalon_PF86.txt", 'r')
+                # print("1") #Смысловое значение не несет - проверка выполнения условия
+                break;
+    file43.close()
+    file44.close()
+    NewFile43.close()
+    NewFile44.close()
+
+    text_box.pack(expand=True)
+    text_box.config(state='disabled')
+
+#btn = Button(text="Scan Program Filsx86", background="#555", foreground="#ccc",padx="20", pady="8", font="16", command=click_button2)
+#btn.pack()
+def click_button3():
+    #global clicks
+    #if clicks:
+    text_box = Text(
+        ws,
+        height=12,
+        width=40
+    )
+    your_list = list(range(1, 10001))
+    i = 0
+    os.chdir("C:\Windows\System32")
+    my_file = open("C:\python_dll\TestFile31.txt", "+w")
+# if runningProcesses == runningProcesses2:
+
+    for file in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+        your_list[i] = file
+        i += 1
+        my_file.write(file + "\n")  # Запись значений в файл
+        t2 = os.path.getctime(file)  # дата создания файла
+
+    # print(file)  # Вывод на консоль то что записали
+    # print(time.ctime(t2))
+    # напечатать дату в строковом формате:
+    # print("time elapsed: {:.2f}s".format(time.time() - start_time))
+    # print(your_list)
+    my_file.close()  # Закрываем файл записи
+
+    i = 0
+    my_file3 = open("C:\python_dll\R2result2.txt", "r")
+    my_file7 = open("C:\python_dll\Reresult10.txt", "w+")
+    for line3 in my_file3:
+        for file5 in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+        # your_list[i] = file5
+            your_list.append(file5)
+            i += 1
+        if file5 + '\n' == line3:
+            t2 = os.path.getctime(file5)  # дата создания файла
+            # print(file5) #Вывод на консоль то что записали
+            # print(time.ctime(t2))
+            my_file7.write(line3 + time.ctime(t2) + '__')
+            my_file7.write(hashlib.md5(open(file5, 'rb').read()).hexdigest() + '\n' + '\n')  # берем хэш файла
+            # print(hashlib.md5(open(file5, 'rb').read()).hexdigest())
+    my_file3.close()
+    my_file7.close()
+    file1 = open("C:\python_dll\TestFile31.txt", 'r')  # Открываем для работы файл с текущими ДЛЛ компьютера
+    file2 = open("C:\python_dll\Etalon.txt", 'r')  # Эталонный файл загружается заранее в эту папку
+    NewFile = open("C:\python_dll\R2result38.txt", "+w")  # Открытие файла для записи совподающих ДЛЛ компьютера с Эталоном
+    NewFile2 = open("C:\python_dll\R2result39.txt",
+                "+w")  # Открытие файла для записи НЕ совподающих ДЛЛ компьютера с Эталоном
+    for line1 in file1:
+        for line2 in file2:
+             if line2 == line1:  # Сравниваем значения строк Эталона и Компьютера - если совопдают - запись произойдет в файл совопадающих значений
+                NewFile.write(line1)
+                break;
+             if line2 != line1 and line2 == 'ztrace_maps.dll\n':  # Сравниваем значения строк Эталона и Компьютера
+            # - если условие не равенства и ДЛЛ последней строки эталона выполнится
+            # - запись произойдет в файл совопадающих НЕ значений
+                NewFile2.write(line1)
+                text_box.insert('end', line1)
+                text_box.insert('end', "Библиотеки не совпавшие с эталоном\n")
+            # print(line1)  # Печатаем значений не совпадающих значений
+                file2.close()  # Открыть и закрыть файл нужно, чтобы перебор в списке for начался с начала
+                file2 = open("C:\python_dll\Etalon.txt", 'r')
+            # print("1") #Смысловое значение не несет - проверка выполнения условия
+                break;
+# Закрываем файлы с которыми работали
+    file1.close()
+    file2.close()
+    NewFile.close()
+    NewFile2.close()
+    text_box.pack(expand=True)
+    text_box.config(state='disabled')
+
+def click_button4():
+    #global clicks
+    #if clicks:
+    text_box = Text(
+        ws,
+        height=12,
+        width=40
+    )
+    your_list = list(range(1, 10001))
+    i = 0
+    my_file3 = open("C:\python_dll\TestFile43.txt", "+w")
+    path2 = 'C:\ProgramData'
+
+    for rootdir, dirs, files in os.walk(path2):
+        for file in files:
+            if ((file.split('.')[-1]) == 'dll'):
+                # print(os.path.join(rootdir, file))
+                my_file3.write(file + "\n")
+    my_file3.close()
+    my_file3 = open("C:\python_dll\TestFile43.txt", "r")
+    my_file7 = open("C:\python_dll\Reresult103.txt", "w+")
+    for line3 in my_file3:
+        for file5 in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+            # your_list[i] = file5
+            your_list.append(file5)
+            i += 1
+            if file5 + '\n' == line3:
+                t2 = os.path.getctime(file5)  # дата создания файла
+                # print(file5) #Вывод на консоль то что записали
+                # print(time.ctime(t2))
+                my_file7.write(line3 + time.ctime(t2) + '__')
+                my_file7.write(hashlib.md5(open(file5, 'rb').read()).hexdigest() + '\n' + '\n')  # берем хэш файла
+            # print(hashlib.md5(open(file5, 'rb').read()).hexdigest())
+    my_file3.close()
+    my_file7.close()
+    file45 = open("C:\python_dll\TestFile43.txt", 'r')  # Открываем для работы файл с текущими ДЛЛ компьютера
+    file46 = open("C:\python_dll\Etalon_PD.txt", 'r')  # Эталонный файл загружается заранее в эту папку
+    NewFile45 = open("C:\python_dll\R2result43.txt","+w")  # Открытие файла для записи совподающих ДЛЛ компьютера с Эталоном
+    NewFile46 = open("C:\python_dll\R2result43_1.txt","+w")  # Открытие файла для записи НЕ совподающих ДЛЛ компьютера с Эталоном
+    for line45 in file45:
+        for line46 in file46:
+            if line46 == line45:  # Сравниваем значения строк Эталона и Компьютера - если совопдают - запись произойдет в файл совопадающих значений
+                NewFile45.write(line46)
+                break;
+            if line46 != line45 and line46 == 'MsMpLics.dll\n':  # Сравниваем значения строк Эталона и Компьютера
+                # - если условие не равенства и ДЛЛ последней строки эталона выполнится
+                # - запись произойдет в файл совопадающих НЕ значений
+                NewFile46.write(line45)
+                text_box.insert('end', line45)
+                text_box.insert('end', "Библиотеки не совпавшие с эталоном\n")
+                # print(line1)  # Печатаем значений не совпадающих значений
+                file46.close()  # Открыть и закрыть файл нужно, чтобы перебор в списке for начался с начала
+                file46 = open("C:\python_dll\Etalon_PD.txt", 'r')
+                # print("1") #Смысловое значение не несет - проверка выполнения условия
+                break;
+    file45.close()
+    file46.close()
+    NewFile45.close()
+    NewFile46.close()
+
+    text_box.pack(expand=True)
+    text_box.config(state='disabled')
+
+def click_button5():
+    #global clicks
+    #if clicks:
+    text_box = Text(
+        ws,
+        height=12,
+        width=40
+    )
+    your_list = list(range(1, 10001))
+    i = 0
+    my_file4 = open("C:\python_dll\TestFile44.txt", "+w")
+    path3 = 'C:\Windows'
+
+    for rootdir, dirs, files in os.walk(path3):
+        for file in files:
+            if ((file.split('.')[-1]) == 'dll'):
+                # print(os.path.join(rootdir, file))
+                my_file4.write(file + "\n")
+    my_file4.close()
+    #my_file3 = open("C:\python_dll\TestFile44.txt", "r")
+    #my_file7 = open("C:\python_dll\Reresult104.txt", "w+")
+    #or line3 in my_file3:
+        #for file5 in glob.glob("*.dll"):  # Цикл поиска ДЛЛ
+            # your_list[i] = file5
+            #your_list.append(file5)
+            #i += 1
+            #if file5 + '\n' == line3:
+                #t2 = os.path.getctime(file5)  # дата создания файла
+            # print(file5) #Вывод на консоль то что записали
+            # print(time.ctime(t2))
+                #my_file7.write(line3 + time.ctime(t2) + '__')
+                #my_file7.write(hashlib.md5(open(file5, 'rb').read()).hexdigest() + '\n' + '\n')  # берем хэш файла
+            # print(hashlib.md5(open(file5, 'rb').read()).hexdigest())
+    #my_file3.close()
+    #my_file7.close()
+    file47 = open("C:\python_dll\TestFile44.txt", 'r')  # Открываем для работы файл с текущими ДЛЛ компьютера
+    file48 = open("C:\python_dll\Etalon_Win.txt", 'r')  # Эталонный файл загружается заранее в эту папку
+    NewFile47 = open("C:\python_dll\R2result47.txt","+w")  # Открытие файла для записи совподающих ДЛЛ компьютера с Эталоном
+    NewFile48 = open("C:\python_dll\R2result47_1.txt","+w")  # Открытие файла для записи НЕ совподающих ДЛЛ компьютера с Эталоном
+    for line47 in file47:
+        for line48 in file48:
+            if line48 == line47:  # Сравниваем значения строк Эталона и Компьютера - если совопдают - запись произойдет в файл совопадающих значений
+                NewFile47.write(line48)
+                break;
+            if line48 != line47 and line48 == 'System.Workflow.Runtime.dll\n':  # Сравниваем значения строк Эталона и Компьютера
+                # - если условие не равенства и ДЛЛ последней строки эталона выполнится
+                # - запись произойдет в файл совопадающих НЕ значений
+                NewFile48.write(line47)
+                text_box.insert('end', line47)
+                text_box.insert('end', "Библиотеки не совпавшие с эталоном\n")
+                # print(line1)  # Печатаем значений не совпадающих значений
+                file48.close()  # Открыть и закрыть файл нужно, чтобы перебор в списке for начался с начала
+                file48 = open("C:\python_dll\Etalon_Win.txt", 'r')
+                # print("1") #Смысловое значение не несет - проверка выполнения условия
+                break;
+    # Закрываем файлы с которыми работали
+    file47.close()
+    file48.close()
+    NewFile47.close()
+    NewFile48.close()
+    text_box.pack(expand=True)
+    text_box.config( state='disabled')
+
+    sb_ver = Scrollbar(
+        ws,
+        orient=VERTICAL
+    )
+
+    sb_ver.pack(side=RIGHT, fill=Y)
+
+    text_box.config(yscrollcommand=sb_ver.set)
+    sb_ver.config(command=text_box.yview)
+
+
+label1 = Label(text="Hello this is Veda_scaner_dll_library")
+label1.pack()
+
+btn = Button(text="Scan Program Files", command=click_button)
+btn.place(x=10, y=20)
+
+btn2 = Button(text="Scan Program Filesx86", command=click_button2)
+btn2.place(x=10, y=50)
+
+btn3 = Button(text="Scan System32", command=click_button3)
+btn3.place(x=10, y=80)
+
+btn4 = Button(text="Scan ProgrammData", command=click_button4)
+btn4.place(x=10, y=110)
+
+btn5 = Button(text="Scan Windows", command=click_button5)
+btn5.place(x=10, y=140)
+
+ws.iconbitmap('C:/Users/*#Вписываем своего юзера/Pictures/maxresdefault.ico')# Это логотип программы - строку можно удалить если не хочеся заморачиваться
+ws.mainloop()
