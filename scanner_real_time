@@ -1,0 +1,87 @@
+import subprocess
+import time
+import sched, time
+import glob, os
+import hashlib
+import difflib
+import filecmp
+import os.path, time
+import hashlib
+import os
+# Importing the library
+from tkinter import *
+from tkinter.ttk import *
+from tkinter.filedialog import askopenfile
+import datetime
+import win10toast
+
+start_time = time.time()
+g = 0
+
+def counter_day():
+    g=+1
+    if g == 1200:
+        os.remove("C:/python_dll/schet.txt")
+        my_file70 = open("C:/python_dll/schet.txt", "w+")
+
+
+s = sched.scheduler(time.time, time.sleep)
+your_list = list(range(1, 10001))
+i = 0
+try:
+   myfile10 = open("C:/python_dll/schet.txt", "r") # or "a+", whatever you need
+except IOError:
+    my_file72 = open("C:/python_dll/schet.txt", "w+")
+#date_object = datetime.date.today()
+#print(date_object)
+
+def f(i=0):
+    s.enter(60, 1, f)  # Перезапуск через 10 секунд
+    #runningProcesses = subprocess.check_output("powershell -Executionpolicy -Command Get-Service Msiexec | Ft Name, Status, StartType")
+    #runningProcesses = subprocess.check_output("powershell -Executionpolicy -Command Get-Process -Name *trustedinstaller*")
+    #runningProcesses2 = "b'\r\nHandles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName"
+    #print(runningProcesses)
+    print("Время начала программы -", "time elapsed: {:.2f}s".format(time.time() - start_time))
+    #print(time.time())
+    os.chdir("C:\Windows\System32")
+    my_file = open("C:\python_dll\TestFile31.txt", "+w")
+#os.remove("C:/python_dll/schet.txt")
+#my_file70 = open("C:/python_dll/schet.txt", "w+")
+    t1 = os.path.getctime('C:\python_dll\schet.txt')
+    #print(os.path.getctime('C:\python_dll\schet.txt'))
+    print("время запуска программы", time.ctime(t1))
+    t10 = time.ctime(t1)
+# определим имя директории, которую создаём - по умолчанию такой директории нет
+#
+    #q = open('C:\python_dll\q.txt', "w+")
+    #t11 = os.path.getctime('C:\python_dll\q.txt')
+    #print(os.path.getctime('C:\python_dll\q.txt'))
+    #print(time.ctime(t11))
+    path = "C:\python_dll"
+
+# Сканирование папки компьютера "C:\Windows\System32", где запускается утилита
+    os.chdir("C:\Windows\System32")
+    my_file = open("C:\python_dll\TestFile201.txt", "w+") #Открытие файла для записи в него всех найденых ДЛЛ
+    for file in glob.glob("*.dll"): # Цикл поиска ДЛЛ
+       #your_list[i] = file
+       i+=1
+       my_file.write(file) # Запись значений в файл
+       t2 = os.path.getctime(file)
+       # дата создания файла
+        #print(file) # Вывод на консоль то что записали
+        #print(time.ctime(t2))
+       t30 = time.ctime(t2)
+        # напечатать дату в строковом формате:
+        #print(your_list)
+       if t2 > t1:
+        print(file, t30)
+        toaster = win10toast.ToastNotifier()
+        toaster.show_toast(file, t30)
+
+    my_file.close() #Закрываем файл записи
+
+
+f()
+counter_day()
+print("Время конца программы", "time elapsed: {:.2f}s".format(time.time() - start_time))
+s.run()
